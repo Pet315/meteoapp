@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+</head>
+<body>
+<h1>Привіт! Це Ukrainian Meteoapp. Обирайте необхідні параметри та отримуйте метеодані свого регіону:</h1>
+<form action="/main/show_db/" method="POST">
+    {% csrf_token %}
+    <h2>Місто:
+        <select name="city">
+            <option value="kyiv" selected>Київ</option>
+            <option value="dnipro">Дніпро</option>
+            <option value="donetsk">Донецьк</option>
+            <option value="i_frankivsk">Івано-Франківськ</option>
+            <option value="kharkiv">Харків</option>
+            <option value="kryvyi_rih">Кривий Ріг</option>
+            <option value="luhansk">Луганськ</option>
+            <option value="lviv">Львів</option>
+            <option value="odesa">Одеса</option>
+            <option value="simferopol">Сімферополь</option>
+        </select>
+    </h2>
+    <h2>Місяць:
+        <select name="id">
+            <option value="1" selected>Січень</option>
+            <option value="2">Лютий</option>
+            <option value="3">Березень</option>
+            <option value="4">Квітень</option>
+            <option value="5">Травень</option>
+            <option value="6">Червень</option>
+            <option value="7">Липень</option>
+            <option value="8">Серпень</option>
+            <option value="9">Вересень</option>
+            <option value="10">Жовтень</option>
+            <option value="11">Листопад</option>
+            <option value="12">Грудень</option>
+        </select>
+    </h2>
+    <h2>Мова:
+        <select name="lan">
+            <option value="0">Російська</option>
+            <option value="1" selected>Українська</option>
+        </select>
+    </h2>
+    <h2>Метод інтерполяції:
+        <select name="interp_method">
+            <option value="linear" selected>Лінійна</option>
+            <option value="polynomial">Поліноміальна</option>
+            <option value="pad">Pad-інтерполяція</option>
+        </select>
+    </h2>
+    <h2>Значення, необхідне для нелінійної інтерполяції (порядок - для поліноміальної, або межа - для pad):
+        <input type="text" name="interp_value" />
+    </h2>
+    <h2><input type="submit" /></h2>
+</form>
+</body>
+</html>

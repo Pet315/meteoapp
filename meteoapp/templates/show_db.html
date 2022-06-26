@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Db_show</title>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 10%;
+            margin: auto;
+        }
+        td, th {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            font-weight: 10;
+        }
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+    <h1>Meteo data</h1>
+    <a href="/main/index" style="color:#000"><h2>Main menu</h2></a>
+    <table>
+        {% for row in rows %}
+            <tr>
+                {% for r_item in row %}
+                    <th>{{ r_item }}</th>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
