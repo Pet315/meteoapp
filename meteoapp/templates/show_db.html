@@ -1,9 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Db_show</title>
+    <title>Таблиця даних за місяць</title>
     <style>
+        a {
+            color: black;
+        }
         table {
             font-family: arial, sans-serif;
             border-collapse: collapse;
@@ -24,8 +28,11 @@
     </style>
 </head>
 <body>
-    <h1>Meteo data</h1>
-    <a href="/main/index" style="color:#000"><h2>Main menu</h2></a>
+    <h1><a name="header">Метеодані</a></h1>
+    <h2><a href={% url 'show_db' %}#t_cond>Температурні умови регіону за визначений місяць</a></h2>
+    <h2><a href="{% url 'show_db' %}#t_duration">Тривалість температурних режимів</a></h2>
+    <h2><a href="/main/index">Повернутися до головного меню</a></h2>
+
     <table>
         {% for row in rows %}
             <tr>
@@ -35,5 +42,35 @@
             </tr>
         {% endfor %}
     </table>
+
+{#    ЛР 2#}
+
+    <br><br><h2><a name="t_cond">Температурні умови регіону за визначений місяць</a></h2>
+    <img src="{% static 'images/t_cond_diag.png' %}" alt="image">
+
+{#    <h3><a href={% url 'show_db' %}#header>Вгору</a></h3>#}
+
+    <h2><a name="t_duration">Тривалість температурних режимів</a></h2>
+
+    <h3>Таблиця</h3>
+    <table>
+        <tr>
+            <th>Температура</th>
+            {% for range_item in range %}
+                <th>{{ range_item }}</th>
+            {% endfor %}
+        </tr>
+
+        <tr>
+            <th>Тривалість</th>
+            {% for duration_item in duration %}
+                <th>{{ duration_item }}</th>
+            {% endfor %}
+        </tr>
+    </table>
+
+    <h3>Діаграма</h3>
+    
+
 </body>
 </html>
