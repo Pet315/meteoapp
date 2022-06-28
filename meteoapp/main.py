@@ -1,11 +1,10 @@
-# import fig as fig
 from pandas import isnull
 from random import randint
 from meteoapp import data
 import openpyxl
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
+from windrose import WindroseAxes
 
 
 def find_file(i, city):
@@ -52,7 +51,7 @@ def lan_localisation(lan, lan1, i, city):
     wb.active = 0
     wc = wb.active
     wc['A1'] = data.column1_tr[lan1]
-    for i in range(2, 1440):
+    for i in range(2, 1490):
         for j in range(9):
             if wc['D' + str(i)].value == data.wind_tr[lan][j]:
                 wc['D' + str(i)] = data.wind_tr[lan1][j]
@@ -106,7 +105,7 @@ def data_interpolation(wc, interp_method, interp_value):
 # lab 2
 
 
-# визначення часового проміжку
+# 2.1 визначення часового проміжку
 def get_rows(rows, day, hours='h', minutes='m'):
     day_rows = []
     day_rows1 = []
@@ -124,7 +123,7 @@ def get_rows(rows, day, hours='h', minutes='m'):
     return day_rows
 
 
-# температурні умови регіону (діаграма)
+# 2.2 температурні умови регіону (діаграма)
 def t_conditions(wc):
     column = []
     for wc_item in wc['C']:
@@ -135,25 +134,70 @@ def t_conditions(wc):
         # columns[1][i] = str(columns[1][i]) # wc['B']
         time.append(i)
     plt.bar(time, column)
-    plt.ylabel("Т,°C")
     plt.xlabel("Time (1 - first_day/0:00 -> 1490 - last_day/23:30)")
+    plt.ylabel("Т,°C")
     plt.savefig('meteoapp/static/images/t_cond_diag.png')
+    plt.close()
     # return plt.bar(['a', 'b', 'c'], [0, 1, 2])
 
 
-# тривалість температурних режимів
-def t_duration(wc):
+# 2.3 тривалість температурних режимів
+
+def duration(wc_column, x_name):
     column = []
-    for wc_item in wc['C']:
+    for wc_item in wc_column:
         column.append(wc_item.value)
     column.pop(0)
 
     range_and_duration = {}
-    for i in range(-27, 16):
+    for i in range(min(column), max(column) + 1):
         range_and_duration.update([[i, 0]])
 
     for column_item in column:
         range_and_duration[column_item] += 0.5
 
-    rd_list = [range_and_duration.keys(), range_and_duration.values]
+    rd_list = [range_and_duration.keys(), range_and_duration.values()]
+
+    plt.bar(rd_list[0], rd_list[1])
+    plt.xlabel(x_name)
+    plt.ylabel("Duration, hours")
+    return rd_list
+
+
+def t_duration(wc):
+    rd_list = duration(wc['C'], "Т,°C")
+    plt.savefig('meteoapp/static/images/t_duration_diag.png')
+    plt.close()
+    return rd_list
+
+
+# 2.4 троянда вітрів
+def wind_rose(id, city, lan1):
+    months_value = 'meteoapp/cities/' + city + '/' + data.months_dict[id]
+    df = pd.read_excel(months_value)
+
+    if df['dd'][0] == data.wind_tr[0][8] or df['dd'][0] == data.wind_tr[1][8]:
+        df['dd'][0] = df['dd'][1]
+    for i in range(len(df.dd)):
+        for j in range(len(data.wind_tr[0])):
+            if df['dd'][i] == data.wind_tr[lan1][j]:
+                if j == 8:
+                    df['dd'][i] = df['dd'][i - 1]
+                else:
+                    df['dd'][i] = data.wind_degrees[j]
+
+    # print(df['dd'])
+
+    ax = WindroseAxes.from_ax()
+    ax.bar(df.dd, df.FF, normed=True, opening=0.8, edgecolor='white')
+    ax.set_legend()
+    plt.savefig('meteoapp/static/images/wind_rose.png')
+    plt.close()
+
+
+# 2.5 тривалість режимів вітрової активності
+def w_duration(wc):
+    rd_list = duration(wc['E'], "Wind speed (m/s)")
+    plt.savefig('meteoapp/static/images/w_duration.png')
+    plt.close()
     return rd_list

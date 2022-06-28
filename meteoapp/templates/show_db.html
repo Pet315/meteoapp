@@ -28,9 +28,11 @@
     </style>
 </head>
 <body>
-    <h1><a name="header">Метеодані</a></h1>
+    <h1><a name="header">{{ city }}. {{ month }}. Таблиця даних за місяць</a></h1>
     <h2><a href={% url 'show_db' %}#t_cond>Температурні умови регіону за визначений місяць</a></h2>
     <h2><a href="{% url 'show_db' %}#t_duration">Тривалість температурних режимів</a></h2>
+    <h2><a href="{% url 'show_db' %}#wind_rose">Троянда вітрів</a></h2>
+    <h2><a href="{% url 'show_db' %}#w_duration">Тривалість режимів вітрової активності</a></h2>
     <h2><a href="/main/index">Повернутися до головного меню</a></h2>
 
     <table>
@@ -45,10 +47,8 @@
 
 {#    ЛР 2#}
 
-    <br><br><h2><a name="t_cond">Температурні умови регіону за визначений місяць</a></h2>
+    <br><br><h2><a name="t_cond">Температурні умови регіону</a></h2>
     <img src="{% static 'images/t_cond_diag.png' %}" alt="image">
-
-{#    <h3><a href={% url 'show_db' %}#header>Вгору</a></h3>#}
 
     <h2><a name="t_duration">Тривалість температурних режимів</a></h2>
 
@@ -56,21 +56,27 @@
     <table>
         <tr>
             <th>Температура</th>
-            {% for range_item in range %}
-                <th>{{ range_item }}</th>
+            {% for t_range_item in t_range %}
+                <th>{{ t_range_item }}</th>
             {% endfor %}
         </tr>
-
         <tr>
             <th>Тривалість</th>
-            {% for duration_item in duration %}
-                <th>{{ duration_item }}</th>
+            {% for t_duration_item in t_duration %}
+                <th>{{ t_duration_item }}</th>
             {% endfor %}
         </tr>
     </table>
 
     <h3>Діаграма</h3>
-    
+    <img src="{% static 'images/t_duration_diag.png' %}" alt="image">
 
+    <h2><a name="wind_rose">Троянда вітрів</a></h2>
+    <img src="{% static 'images/wind_rose.png' %}" alt="image">
+
+    <h2><a name="w_duration">Тривалість режимів вітрової активності</a></h2>
+    <img src="{% static 'images/w_duration.png' %}" alt="image">
+
+    <h3><a href={% url 'show_db' %}#header>Вгору</a></h3>
 </body>
 </html>
