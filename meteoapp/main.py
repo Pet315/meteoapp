@@ -5,6 +5,7 @@ import openpyxl
 import pandas as pd
 import matplotlib.pyplot as plt
 from windrose import WindroseAxes
+import pdfkit
 
 
 def find_file(i, city):
@@ -25,7 +26,7 @@ def get_columns(wc, list):
         for wc_item in wc[list[i]]:
             column.append(wc_item.value)
         i += 1
-    for i in range(2):
+    for i in range(len(data.ic_names)-1):
         columns[i].pop(0)
     return columns
 
@@ -67,20 +68,28 @@ def data_correction(i, city, interp_method, interp_value):
     columns = data_interpolation(wc, interp_method, interp_value)  # інтерполяція даних
 
     # запис в бд
-    for i in range(2, 1440):
+    for i in range(2, len(wc['F'])-1):
         if isnull(wc['F' + str(i)].value):  # заповнення порожніх полей колонки ww позначенням CL - тобто, "без явищ"
             wc['F' + str(i)] = 'CL'
         if isnull(wc['D' + str(i)].value):  # напрям вітру
             if i != 2:  # у порожніх полях вказується напрям за попереднє число місяця
                 wc['D' + str(i)] = wc['D' + str(i - 1)].value
             else:  # першому елементу таблиці надається напрям за найближче наступне число місяця
-                for j in range(2, 1439):
+                for j in range(2, len(wc['D'])):
                     if not isnull(wc['D' + str(j)].value):
                         wc['D' + str(i)] = wc['D' + str(j)].value
                         break
         wc['I' + str(i)] = randint(0, 100)
         wc['G' + str(i)] = columns[0][i]
         wc['K' + str(i)] = columns[1][i]
+
+        # wc['I' + str(i)] = 10.0
+        # wc['I' + str(i)].value = str(wc['I' + str(i)].value)
+        # arr = wc['I' + str(i)].value.split('.')
+        # wc['I' + str(i)].value = arr[0] + '.'
+        # if (len(arr)>1):
+        #     wc['I' + str(i)].value += arr[1]
+        # wc['I' + str(i)].value = float(wc['I' + str(i)].value)
 
     wb.save(months_value)
 
@@ -103,8 +112,6 @@ def data_interpolation(wc, interp_method, interp_value):
 
 
 # lab 2
-
-
 # 2.1 визначення часового проміжку
 def get_rows(rows, day, hours='h', minutes='m'):
     day_rows = []
@@ -133,6 +140,7 @@ def t_conditions(wc):
     for i in range(len(column)):
         # columns[1][i] = str(columns[1][i]) # wc['B']
         time.append(i)
+
     plt.bar(time, column)
     plt.xlabel("Time (1 - first_day/0:00 -> 1490 - last_day/23:30)")
     plt.ylabel("Т,°C")

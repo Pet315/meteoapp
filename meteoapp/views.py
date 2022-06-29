@@ -1,6 +1,16 @@
+import mimetypes
+import os
+
+from django.http import HttpResponse
 from django.shortcuts import render
+# from pdfkit import from_file
+
 from meteoapp import main
 from meteoapp import data
+import aspose.words as aw
+
+# import pdfkit
+# import weasyprint
 
 
 def index(request, error=''):
@@ -58,9 +68,13 @@ def show_db(request):
     main.wind_rose(id, city, lan1)
     main.w_duration(wc)
 
+    # 2.6 save report
+    doc = aw.Document("meteoapp/templates/show_db_report.html")
+    doc.save("meteoapp/static/show_db_report.pdf")
+
+    # output
     month = data.months_names[id]
     city = data.cities_tr[1][id_city]
-    # output
     # context = {i: columns[i] for i in range(len(columns))}
     context = {'rows': rows, 't_range': rd_list[0], 't_duration': rd_list[1], 'month': month, 'city': city}
     return render(request, 'show_db.html', context)
